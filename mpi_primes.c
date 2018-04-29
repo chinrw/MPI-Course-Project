@@ -8,7 +8,6 @@
 #define DISPLAY_FACTORY 10
 
 int end_now = 0;
-int progress = 0;
 int id;
 
 
@@ -33,6 +32,7 @@ int main() {
     unsigned int primes = 0;
     unsigned int primes_partial;
     signal(SIGUSR1, sig_handler);
+    int progress = 0;
 
 
     if (DISPLAY_PROGRESS) {
@@ -46,6 +46,7 @@ int main() {
     MPI_Init(NULL, NULL);
     MPI_Comm_size(MPI_COMM_WORLD, &numProcesses);
     MPI_Comm_rank(MPI_COMM_WORLD, &id);
+    MPI_Status status;
 
     if (id == 0) {
         printf("%d processes available\n\n", numProcesses);
@@ -61,6 +62,18 @@ int main() {
             printf("%10d    %10d\n", n, primes);
         }
         if (end_now == 1 && id == 0) {
+            int temp = 0;
+            int count = 1;
+            if (numProcesses != count) {
+                count = numProcesses - 1;
+            }
+            for (int i = 0; i < count; ++i) {
+                MPI_Recv(&temp, 1, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+                printf("%d\n", temp);
+                if (temp > progress) {
+                    progress = temp;
+                }
+            }
             printf("%10d    %10d\n", progress, primes);
         }
         n = n * display_factor;
@@ -76,6 +89,8 @@ int main() {
 
 unsigned int prime_number(unsigned int n, int id, int numProcesses) {
     unsigned int total = 0;
+    int progress;
+
 
     for (unsigned int i = (unsigned int) (2 + id); i <= n; i += numProcesses) {
         if (isprime(i)) {
@@ -83,6 +98,7 @@ unsigned int prime_number(unsigned int n, int id, int numProcesses) {
         }
         if (end_now == 1) {
             progress = i;
+            MPI_Send(&progress, 1, MPI_INT, 0, 999, MPI_COMM_WORLD);
             return total;
         }
         progress = i;
