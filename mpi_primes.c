@@ -79,7 +79,6 @@ int main() {
     }
 
     if (id == 0) {
-        printf("%10d    %10d\n", MAX_NUMBER, primes);
         printf("\nTotal number of prime:%u\n", primes);
     }
     MPI_Finalize();
