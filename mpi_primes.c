@@ -69,7 +69,6 @@ int main() {
             }
             for (int i = 0; i < count; ++i) {
                 MPI_Recv(&temp, 1, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-                printf("%d\n", temp);
                 if (temp > progress) {
                     progress = temp;
                 }
