@@ -64,7 +64,7 @@ int main() {
             int temp = 0;
             int count = 1;
             if (numProcesses != count) {
-                count = numProcesses - 1;
+                count = (numProcesses + 1) / 2;
             }
             for (int i = 0; i < count; ++i) {
                 MPI_Recv(&temp, 1, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
