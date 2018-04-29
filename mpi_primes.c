@@ -2,7 +2,7 @@
 # include <stdio.h>
 #include <sys/param.h>
 
-#define MAX_NUMBER 1000000
+#define MAX_NUMBER 4294967295
 #define DISPLAY_PROGRESS 1
 #define DISPLAY_FACTORY 10
 
@@ -79,6 +79,7 @@ int main() {
     }
 
     if (id == 0) {
+        printf("%10d    %10d\n", MAX_NUMBER, primes);
         printf("\nTotal number of prime:%u\n", primes);
     }
     MPI_Finalize();
