@@ -1,6 +1,4 @@
-all: compile
+all: hw4.out
 
-COMPILER = mpicc
-
-compile: mpi_primes.c
-	$(COMPILER) mpi_primes.c -o hw4.out -Wall
+hw4.out: mpi_primes.c
+		/usr/local/mpich-3.2/bin/mpicxx -O2 -Wall mpi_primes.c -o hw4.out

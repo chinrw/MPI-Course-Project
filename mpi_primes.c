@@ -48,7 +48,8 @@ int main() {
     MPI_Status status;
 
     if (id == 0) {
-        printf("%d processes available\n\n", numProcesses);
+        printf("%12c\t\t%s\n",'N',"Primes");
+        fflush(stdout);
     }
 
     while (n <= MAX_NUMBER && end_now == 0) {
@@ -57,8 +58,9 @@ int main() {
         primes_partial = prime_number(n, id, numProcesses);
         MPI_Reduce(&primes_partial, &primes, 1, MPI_UNSIGNED, MPI_SUM, 0, MPI_COMM_WORLD);
 
-        if (id == 0 && end_now != 1) {
-            printf("%10d    %10d\n", n, primes);
+        if (id == 0 && end_now != 1 && primes != 0) {
+            printf("%12d\t%12d\n", n, primes);
+            fflush(stdout);
         }
         if (end_now == 1 && id == 0) {
             int temp = 0;
@@ -72,14 +74,15 @@ int main() {
                     progress = temp;
                 }
             }
-            printf("%10d    %10d\n", progress, primes);
+            printf("%12d\t%12d\n", progress, primes);
+            fflush(stdout);
         }
         n = n * display_factor;
     }
 
-    if (id == 0) {
-        printf("\nTotal number of prime:%u\n", primes);
-    }
+//    if (id == 0) {
+//        printf("\nTotal number of prime:%u\n", primes);
+//    }
     MPI_Finalize();
 
     return 0;
@@ -87,8 +90,7 @@ int main() {
 
 unsigned int prime_number(unsigned int n, int id, int numProcesses) {
     unsigned int total = 0;
-    int progress;
-
+    int progress = 0;
 
     for (unsigned int i = (unsigned int) (2 + id); i <= n; i += numProcesses) {
         if (isprime(i)) {
